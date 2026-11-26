@@ -1,7 +1,14 @@
 export type ThemeMode = 'light' | 'dark';
 export type CodeLang = 'cn' | 'py';
 
-export type CompanionMood = 'happy' | 'curious' | 'excited' | 'oops' | 'proud';
+export type CompanionMood =
+  | 'happy'
+  | 'curious'
+  | 'excited'
+  | 'oops'
+  | 'proud'
+  | 'sleepy'
+  | 'loved';
 
 export type BadgeId =
   | 'binary-hero'
@@ -11,7 +18,8 @@ export type BadgeId =
   | 'python-explorer'
   | 'quiz-whiz'
   | 'algo-wizard'
-  | 'grand-explorer';
+  | 'grand-explorer'
+  | 'pet-bestie';
 
 export interface BadgeDef {
   id: BadgeId;
@@ -383,4 +391,8 @@ export interface AppStorageState {
   solvedQuizzes: string[];
   solvedPractice: string[];
   soundEnabled: boolean;
+  hasSeenIntro: boolean;
+  petBond: number;
+  petSnacksFed: number;
+  petMinimized: boolean;
 }

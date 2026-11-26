@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Play, RotateCcw } from 'lucide-react';
 import {
   CHAPTERS,
@@ -13,17 +13,21 @@ import {
   getLessonById,
   getNextReadyLesson,
 } from './data/course';
+import { computeQuestOverview } from './data/quest';
 import { useHashRoute } from './hooks/useHashRoute';
 import {
   applyAndSaveTheme,
   loadAppState,
   loadTheme,
   markChallengeDone,
+  markIntroSeen,
   markLessonDone,
+  recordPetInteraction,
   recordPracticeSolved,
   recordQuizSolved,
   recordRecentVisit,
   setStoredCodeLang,
+  setStoredPetMinimized,
   setStoredSoundEnabled,
   unlockBadge,
 } from './utils/storage';
@@ -34,7 +38,7 @@ import {
   playSwitch,
   setSoundEnabled,
 } from './utils/sound';
-import { AppStorageState, BadgeId, CodeLang, SceneState, ThemeMode } from './types/course';
+import { AppStorageState, BadgeId, CodeLang, CompanionMood, SceneState, ThemeMode } from './types/course';
 import { Topbar } from './components/Topbar';
 import { Sidebar } from './components/Sidebar';
 import { IsoStageRouter, StageInteractionHandlers } from './components/stage/IsoStageRouter';
@@ -48,6 +52,9 @@ import { FinderModal } from './components/FinderModal';
 import { BadgesModal } from './components/BadgesModal';
 import { PracticeModal } from './components/PracticeModal';
 import { CheatsheetModal } from './components/CheatsheetModal';
+import { QuestSpineModal } from './components/QuestSpineModal';
+import { PetReactionSignal, PiBotPetWidget } from './components/PiBotPetWidget';
+import { PiBotTrick } from './components/PiBotAvatar';
 import { Toast } from './components/Toast';
 
 const BIT_WEIGHTS = [8, 4, 2, 1] as const;
@@ -65,6 +72,10 @@ export default function App() {
   const [finderOpen, setFinderOpen] = useState(false);
   const [practiceOpen, setPracticeOpen] = useState(false);
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false);
+  const [questModal, setQuestModal] = useState<{ open: boolean; isFirstWelcome: boolean }>(() => ({
+    open: !loadAppState().hasSeenIntro,
+    isFirstWelcome: !loadAppState().hasSeenIntro,
+  }));
   const [badgesModal, setBadgesModal] = useState<{ open: boolean; tab: 'badges' | 'playgrounds' }>({
     open: false,
     tab: 'badges',
@@ -72,7 +83,9 @@ export default function App() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState<string | null>(null);
   const [confettiKey, setConfettiKey] = useState(0);
+  const [petReaction, setPetReaction] = useState<PetReactionSignal | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+  const prevPartsRef = useRef<number | null>(null);
 
   // Learn-mode playful sandbox overrides
   const [sandboxBits, setSandboxBits] = useState<[0 | 1, 0 | 1, 0 | 1, 0 | 1] | null>(null);
@@ -81,6 +94,8 @@ export default function App() {
   const [sandboxFocusPixel, setSandboxFocusPixel] = useState<number | undefined>(undefined);
   const [replayPos, setReplayPos] = useState<number | null>(null);
   const replayTimerRef = useRef<number | null>(null);
+
+  const questOverview = useMemo(() => computeQuestOverview(storage), [storage]);
 
   const activeLesson = getLessonById(route.lessonId) ?? READY_LESSON_LIST[0];
   const activeChapter = getChapterById(activeLesson.chapterId);
@@ -101,6 +116,13 @@ export default function App() {
     setConfettiKey((k) => k + 1);
   }, []);
 
+  const triggerPetReaction = useCallback(
+    (mood: CompanionMood, line: string, trick?: PiBotTrick) => {
+      setPetReaction({ key: Date.now() + Math.random(), mood, line, trick });
+    },
+    []
+  );
+
   const showToast = useCallback((message: string) => {
     setToastMsg(message);
     if (toastTimerRef.current !== null) {
@@ -111,6 +133,26 @@ export default function App() {
       toastTimerRef.current = null;
     }, 2800);
   }, []);
+
+  // Celebrate automatically whenever a new Pi-Bot core hardware part unlocks!
+  useEffect(() => {
+    if (prevPartsRef.current === null) {
+      prevPartsRef.current = questOverview.unlockedPartsCount;
+      return;
+    }
+    if (questOverview.unlockedPartsCount > prevPartsRef.current) {
+      const newlyUnlocked = questOverview.stages.find((s) => s.unlocked && s.stageNum === questOverview.unlockedPartsCount);
+      triggerConfetti();
+      triggerPetReaction(
+        'proud',
+        newlyUnlocked
+          ? `${newlyUnlocked.partEmoji} 哇！我的「${newlyUnlocked.partName}」装配成功啦！快看我的新装备！`
+          : '哇！新核心部件点亮，我进化啦！',
+        'flip'
+      );
+    }
+    prevPartsRef.current = questOverview.unlockedPartsCount;
+  }, [questOverview, triggerConfetti, triggerPetReaction]);
 
   const clearReplayTimer = useCallback(() => {
     if (replayTimerRef.current !== null) {
@@ -196,20 +238,23 @@ export default function App() {
           if (res.unlockedNow && res.badge) {
             triggerConfetti();
             showToast(`${res.badge.emoji} 解锁徽章「${res.badge.title}」+${res.badge.stars} ★`);
+            triggerPetReaction('excited', '🐍 哇！你切到了真正的 Python 代码，好帅气！', 'hop');
           }
           next = res.state;
         }
         return next;
       });
     },
-    [showToast, triggerConfetti]
+    [showToast, triggerConfetti, triggerPetReaction]
   );
 
   const closeAllModals = useCallback(() => {
     setFinderOpen(false);
     setPracticeOpen(false);
     setCheatsheetOpen(false);
+    setQuestModal((prev) => ({ ...prev, open: false }));
     setBadgesModal((prev) => ({ ...prev, open: false }));
+    setStorage((prev) => markIntroSeen(prev));
   }, []);
 
   const handleSelectLesson = useCallback(
@@ -247,6 +292,7 @@ export default function App() {
   const handleSolveQuiz = useCallback(
     (quizId: string, rewardStars: number) => {
       triggerConfetti();
+      triggerPetReaction('excited', `🎯 神算子！这题一眼就猜中了 +${rewardStars} ★！`, 'hop');
       setStorage((prev) => {
         const res = recordQuizSolved(prev, quizId, rewardStars);
         let next = res.state;
@@ -263,12 +309,13 @@ export default function App() {
         return next;
       });
     },
-    [showToast, triggerConfetti]
+    [showToast, triggerConfetti, triggerPetReaction]
   );
 
   const handleSolvePractice = useCallback(
     (questionId: string, rewardStars: number) => {
       triggerConfetti();
+      triggerPetReaction('proud', `⭐ 练习题通关 +${rewardStars} ★！指挥官太强啦！`, 'hop');
       setStorage((prev) => {
         const res = recordPracticeSolved(prev, questionId, rewardStars);
         let next = res.state;
@@ -285,12 +332,13 @@ export default function App() {
         return next;
       });
     },
-    [showToast, triggerConfetti]
+    [showToast, triggerConfetti, triggerPetReaction]
   );
 
   const handleChallengeSolved = useCallback(
     (lessonId: string) => {
       triggerConfetti();
+      triggerPetReaction('proud', '🏆 动手挑战大捷！我的核心能量槽又充了一大格！', 'flip');
       setStorage((prev) => {
         let next = markChallengeDone(prev, lessonId);
         let toastToShow: string | null = null;
@@ -334,15 +382,34 @@ export default function App() {
         return next;
       });
     },
-    [showToast, triggerConfetti]
+    [showToast, triggerConfetti, triggerPetReaction]
   );
 
   const handleBonkWall = useCallback(() => {
+    triggerPetReaction('oops', '💥 哎哟我脑袋起包了！不过我们亲眼抓到一只越界 Bug！');
     tryUnlockBadge(
       'bug-hunter',
       '💥 发现隐藏徽章「勇敢试错家」+20 ★ 抓到一只越界 Bug！'
     );
-  }, [tryUnlockBadge]);
+  }, [tryUnlockBadge, triggerPetReaction]);
+
+  const handlePetInteract = useCallback(
+    (kind: 'pet' | 'snack' | 'trick') => {
+      setStorage((prev) => {
+        let next = recordPetInteraction(prev, kind);
+        if (next.petBond >= 5) {
+          const bRes = unlockBadge(next, 'pet-bestie');
+          if (bRes.unlockedNow && bRes.badge) {
+            triggerConfetti();
+            showToast(`${bRes.badge.emoji} 解锁徽章「${bRes.badge.title}」+${bRes.badge.stars} ★`);
+          }
+          next = bRes.state;
+        }
+        return next;
+      });
+    },
+    [showToast, triggerConfetti]
+  );
 
   const microLab = useMicroLabRuntime(
     activeLesson,
@@ -450,7 +517,8 @@ export default function App() {
     [activeStep, showToast]
   );
 
-  const anyModalOpen = finderOpen || practiceOpen || cheatsheetOpen || badgesModal.open;
+  const anyModalOpen =
+    finderOpen || practiceOpen || cheatsheetOpen || badgesModal.open || questModal.open;
 
   // Global keyboard shortcuts (Cmd/Ctrl+K, ArrowLeft, ArrowRight, Escape)
   useEffect(() => {
@@ -671,7 +739,10 @@ export default function App() {
           setBadgesModal({ open: true, tab: 'badges' });
         }}
         onToggleMenu={() => setMenuOpen((o) => !o)}
-        onGoHome={() => handleSelectLesson(DEFAULT_LESSON_ID, 0)}
+        onGoHome={() => {
+          closeAllModals();
+          setQuestModal({ open: true, isFirstWelcome: false });
+        }}
         onClickLearn={() => {
           closeAllModals();
           setInChallenge(false);
@@ -687,7 +758,13 @@ export default function App() {
           activeLessonId={activeLesson.id}
           activeChapterId={activeLesson.chapterId}
           storage={storage}
+          questOverview={questOverview}
           onSelectLesson={(id) => handleSelectLesson(id, 0)}
+          onOpenQuestMap={() => {
+            setMenuOpen(false);
+            closeAllModals();
+            setQuestModal({ open: true, isFirstWelcome: false });
+          }}
         />
 
         <main className="lesson">
@@ -780,6 +857,42 @@ export default function App() {
           )}
         </aside>
       </div>
+
+      {/* Interactive Draggable 2.5D Web Pet (Pi-Bot #314) */}
+      <PiBotPetWidget
+        lessonId={activeLesson.id}
+        upgrades={questOverview.upgrades}
+        unlockedPartsCount={questOverview.unlockedPartsCount}
+        petBond={storage.petBond}
+        minimized={storage.petMinimized}
+        reaction={petReaction}
+        onSetMinimized={(min) => setStorage((prev) => setStoredPetMinimized(prev, min))}
+        onInteract={handlePetInteract}
+        onOpenQuestMap={() => {
+          closeAllModals();
+          setQuestModal({ open: true, isFirstWelcome: false });
+        }}
+      />
+
+      <QuestSpineModal
+        open={questModal.open}
+        isFirstWelcome={questModal.isFirstWelcome}
+        overview={questOverview}
+        chapters={CHAPTERS}
+        storage={storage}
+        onClose={() => {
+          setQuestModal({ open: false, isFirstWelcome: false });
+          setStorage((prev) => markIntroSeen(prev));
+        }}
+        onJumpLesson={(lessonId, startChallenge) => {
+          setStorage((prev) => markIntroSeen(prev));
+          if (startChallenge) {
+            handleStartChallengeDirect(lessonId);
+          } else {
+            handleSelectLesson(lessonId, 0);
+          }
+        }}
+      />
 
       <FinderModal
         open={finderOpen}

@@ -129,3 +129,30 @@ export function playVictory() {
     playTone(n, idx === notes.length - 1 ? 0.36 : 0.14, 'triangle', 0.14, idx * 0.085);
   });
 }
+
+/** Cute robotic chirp-giggle when petting or poking Pi-Bot */
+export function playPetGiggle() {
+  playTone(620, 0.08, 'sine', 0.11, 0, 860);
+  playTone(760, 0.09, 'triangle', 0.11, 0.075, 1040);
+  playTone(940, 0.11, 'sine', 0.09, 0.15, 1180);
+}
+
+/** Crunchy cookie munch sound when feeding Pi-Bot a star biscuit */
+export function playMunch() {
+  playTone(260, 0.06, 'square', 0.055, 0, 180);
+  playTone(320, 0.06, 'square', 0.055, 0.09, 210);
+  playTone(540, 0.14, 'triangle', 0.12, 0.19, 780);
+}
+
+/** Playful whoosh-boing when Pi-Bot does a 360 flip trick */
+export function playFlip() {
+  playTone(380, 0.18, 'sine', 0.11, 0, 920);
+  playTone(920, 0.16, 'triangle', 0.1, 0.17, 520);
+}
+
+/** Gentle rising chime when waking Pi-Bot from a nap */
+export function playWakeUp() {
+  playTone(440, 0.1, 'sine', 0.09, 0, 587.33);
+  playTone(587.33, 0.13, 'triangle', 0.1, 0.09, 783.99);
+}
+

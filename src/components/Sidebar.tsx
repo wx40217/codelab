@@ -3,19 +3,24 @@ import {
   CheckCircle2,
   ChevronRight,
   Clock,
+  Compass,
   FileText,
   Folder,
   FolderOpen,
   Sparkles,
 } from 'lucide-react';
 import { AppStorageState, Chapter } from '../types/course';
+import { QuestOverview } from '../data/quest';
+import { PiBotAvatar } from './PiBotAvatar';
 
 interface SidebarProps {
   chapters: Chapter[];
   activeLessonId: string;
   activeChapterId: string;
   storage: AppStorageState;
+  questOverview: QuestOverview;
   onSelectLesson: (lessonId: string) => void;
+  onOpenQuestMap: () => void;
 }
 
 export function Sidebar({
@@ -23,7 +28,9 @@ export function Sidebar({
   activeLessonId,
   activeChapterId,
   storage,
+  questOverview,
   onSelectLesson,
+  onOpenQuestMap,
 }: SidebarProps) {
   const [openChapters, setOpenChapters] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {};
@@ -50,6 +57,48 @@ export function Sidebar({
 
   return (
     <aside className="sidebar" aria-label="课程目录">
+      {/* Compact 4-Stage Guided Quest Spine Card */}
+      <button
+        type="button"
+        className="quest-banner"
+        onClick={onOpenQuestMap}
+        title="打开「唤醒阿派」4 阶段探险主线地图"
+      >
+        <div className="quest-banner__top">
+          <PiBotAvatar
+            mood={questOverview.allComplete ? 'proud' : 'happy'}
+            size={34}
+            upgrades={questOverview.upgrades}
+          />
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div className="quest-banner__eyebrow">
+              <Compass size={11} style={{ color: 'var(--coral)' }} />
+              <span>唤醒阿派主线</span>
+            </div>
+            <div className="quest-banner__next">
+              {questOverview.allComplete
+                ? '全部 4 部件已满格觉醒！'
+                : `下一站：${questOverview.recommendedStageName}`}
+            </div>
+          </div>
+          <span className="quest-banner__ratio tabular-nums">
+            {questOverview.unlockedPartsCount}/4
+          </span>
+        </div>
+
+        <div className="quest-banner__dots" aria-hidden="true">
+          {questOverview.stages.map((st) => (
+            <span
+              key={st.chapterId}
+              className={`quest-dot ${st.unlocked ? 'is-unlocked' : st.pct > 0 ? 'is-charging' : ''}`}
+              title={`${st.partName} (${st.pct}%)`}
+            >
+              <span style={{ width: `${st.pct}%` }} />
+            </span>
+          ))}
+        </div>
+      </button>
+
       <div className="sidebar__head">
         <Folder size={17} strokeWidth={2.1} style={{ color: 'var(--ink)' }} />
         <h2>课程</h2>
@@ -150,7 +199,7 @@ export function Sidebar({
         })}
       </div>
 
-      <div className="progress-pill" title={`已完成 ${doneCount} 节（当前开放 3 节互动示范课）`}>
+      <div className="progress-pill" title={`已完成 ${doneCount} / ${totalLessons} 节互动课程`}>
         <strong>进度</strong>
         <span className="meter" aria-hidden="true">
           <span style={{ width: `${pct}%` }} />

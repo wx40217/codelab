@@ -68,6 +68,13 @@ export const BADGE_CATALOG: BadgeDef[] = [
     emoji: '👑',
     stars: 50,
   },
+  {
+    id: 'pet-bestie',
+    title: '阿派的铁哥们',
+    desc: '和桌面宠物阿派摸头、喂饼干或翻跟头累计互动 5 次！',
+    emoji: '🤝',
+    stars: 20,
+  },
 ];
 
 export function getBadgeById(id: BadgeId): BadgeDef | undefined {
@@ -92,6 +99,10 @@ const DEFAULT_STATE: AppStorageState = {
   solvedQuizzes: [],
   solvedPractice: [],
   soundEnabled: true,
+  hasSeenIntro: false,
+  petBond: 0,
+  petSnacksFed: 0,
+  petMinimized: false,
 };
 
 export function loadTheme(): ThemeMode {
@@ -142,6 +153,13 @@ export function loadAppState(): AppStorageState {
       solvedQuizzes: Array.isArray(parsed.solvedQuizzes) ? parsed.solvedQuizzes : [],
       solvedPractice: Array.isArray(parsed.solvedPractice) ? parsed.solvedPractice : [],
       soundEnabled: typeof parsed.soundEnabled === 'boolean' ? parsed.soundEnabled : true,
+      hasSeenIntro: typeof parsed.hasSeenIntro === 'boolean' ? parsed.hasSeenIntro : false,
+      petBond: typeof parsed.petBond === 'number' && Number.isFinite(parsed.petBond) ? parsed.petBond : 0,
+      petSnacksFed:
+        typeof parsed.petSnacksFed === 'number' && Number.isFinite(parsed.petSnacksFed)
+          ? parsed.petSnacksFed
+          : 0,
+      petMinimized: typeof parsed.petMinimized === 'boolean' ? parsed.petMinimized : false,
     };
   } catch {
     return DEFAULT_STATE;
@@ -269,6 +287,37 @@ export function setStoredSoundEnabled(
 ): AppStorageState {
   if (state.soundEnabled === soundEnabled) return state;
   const next: AppStorageState = { ...state, soundEnabled };
+  saveAppState(next);
+  return next;
+}
+
+export function markIntroSeen(state: AppStorageState): AppStorageState {
+  if (state.hasSeenIntro) return state;
+  const next: AppStorageState = { ...state, hasSeenIntro: true };
+  saveAppState(next);
+  return next;
+}
+
+export function recordPetInteraction(
+  state: AppStorageState,
+  kind: 'pet' | 'snack' | 'trick'
+): AppStorageState {
+  const bondDelta = kind === 'snack' ? 2 : 1;
+  const next: AppStorageState = {
+    ...state,
+    petBond: state.petBond + bondDelta,
+    petSnacksFed: kind === 'snack' ? state.petSnacksFed + 1 : state.petSnacksFed,
+  };
+  saveAppState(next);
+  return next;
+}
+
+export function setStoredPetMinimized(
+  state: AppStorageState,
+  petMinimized: boolean
+): AppStorageState {
+  if (state.petMinimized === petMinimized) return state;
+  const next: AppStorageState = { ...state, petMinimized };
   saveAppState(next);
   return next;
 }
