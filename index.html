@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-Hans" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f7f4ee" />
+    <title>指令实验室 · CodeLab — 计算机与编程启蒙工作台</title>
+    <meta
+      name="description"
+      content="面向 9-12 岁零基础孩子的交互式编程启蒙实验室，通过 2.5D 等距图解舞台、中英双语同步代码高亮与动手微挑战培养计算机思维。"
+    />
+    <meta property="og:title" content="指令实验室 · CodeLab — 计算机与编程启蒙工作台" />
+    <meta
+      property="og:description"
+      content="面向 9-12 岁零基础孩子的交互式编程启蒙实验室，通过 2.5D 等距图解舞台、中英双语同步代码高亮与动手微挑战培养计算机思维。"
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Noto+Sans+SC:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      (function () {
+        var theme = null;
+        try {
+          theme = localStorage.getItem('codelab:theme');
+        } catch (error) {}
+        if (theme !== 'dark' && theme !== 'light') {
+          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        document.documentElement.dataset.theme = theme;
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta && theme === 'dark') meta.content = '#0b0c0e';
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

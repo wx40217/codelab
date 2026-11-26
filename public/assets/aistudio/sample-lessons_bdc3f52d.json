@@ -1,0 +1,857 @@
+[
+  {
+    "id": "big-o",
+    "title": "Big-O Notation",
+    "sceneType": "four-platform-growth (custom bar/block platforms)",
+    "cards": [
+      {
+        "type": "explain"
+      },
+      {
+        "type": "code",
+        "source": "first(a):\n    return a[0]\n\nsearch(a, x):\n    repeat: look at the middle, keep one half\n\ntotal(a):\n    for each item in a:\n        add it on\n\nany_pair(a):\n    for each item in a:\n        for each other item in a:\n            compare the two"
+      },
+      {
+        "type": "facts",
+        "title": "Steps taken"
+      }
+    ],
+    "steps": [
+      {
+        "label": "Count steps, not seconds",
+        "kind": "Concept",
+        "body": [
+          "How fast is an algorithm? Seconds depend on the machine. So instead we count <strong>steps</strong>, and ask how that count depends on the size of the input, <em>n</em>.",
+          "Here are four kinds of algorithm working on 2 items. Each block is one step of work. They look much the same."
+        ],
+        "note": {
+          "title": "Notice",
+          "text": "On small inputs almost anything is fast. The differences show when n grows."
+        },
+        "state": {
+          "n": 2
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 2,
+              "active": false
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 4,
+              "active": false
+            }
+          ],
+          "note": "Steps for n = 2 items."
+        }
+      },
+      {
+        "label": "Double the input",
+        "kind": "Grow",
+        "body": [
+          "Give them 4 items instead of 2. One platform has not changed. One gained a single block. One doubled. One is four times the size.",
+          "That reaction to growth is what Big-O describes."
+        ],
+        "state": {
+          "n": 4
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 2,
+              "active": false
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 4,
+              "active": false
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 16,
+              "active": false
+            }
+          ],
+          "note": "Steps for n = 4 items."
+        }
+      },
+      {
+        "label": "Double it again",
+        "kind": "Grow",
+        "body": [
+          "8 items. The same thing happens again, each growing in its own way: not at all, by one, by double, by four times.",
+          "Big-O names the <strong>shape of the growth</strong>, and ignores the details. 2n steps and n + 5 steps are both just O(n)."
+        ],
+        "note": {
+          "title": "Read it as",
+          "text": "“O(n)” is “the work grows in step with n.”"
+        },
+        "state": {
+          "n": 8
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 3,
+              "active": false
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 8,
+              "active": false
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 64,
+              "active": false
+            }
+          ],
+          "note": "Steps for n = 8 items."
+        }
+      },
+      {
+        "label": "O(1): constant",
+        "kind": "Constant",
+        "body": [
+          "The work does not depend on n at all. Reading an array cell by its index, pushing onto a stack: one step, for 8 items or 8 million.",
+          "This is as good as it gets."
+        ],
+        "state": {
+          "n": 8,
+          "focus": "one"
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": true
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 3,
+              "active": false
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 8,
+              "active": false
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 64,
+              "active": false
+            }
+          ],
+          "note": "Steps for n = 8 items."
+        },
+        "lines": [
+          1,
+          2
+        ]
+      },
+      {
+        "label": "O(log n): logarithmic",
+        "kind": "Logarithmic",
+        "body": [
+          "Each step throws away half of what is left, as binary search does. Doubling the input adds just <strong>one</strong> more step.",
+          "A million items take about 20 steps. A billion take about 30."
+        ],
+        "state": {
+          "n": 8,
+          "focus": "log"
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 3,
+              "active": true
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 8,
+              "active": false
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 64,
+              "active": false
+            }
+          ],
+          "note": "Steps for n = 8 items."
+        },
+        "lines": [
+          4,
+          5
+        ]
+      },
+      {
+        "label": "O(n): linear",
+        "kind": "Linear",
+        "body": [
+          "Every item is looked at once: adding up a list, or searching one that is not sorted. Twice the input, twice the work.",
+          "Often this is the best possible, because you cannot skip items you have never seen."
+        ],
+        "state": {
+          "n": 8,
+          "focus": "lin"
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 3,
+              "active": false
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 8,
+              "active": true
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 64,
+              "active": false
+            }
+          ],
+          "note": "Steps for n = 8 items."
+        },
+        "lines": [
+          7,
+          8,
+          9
+        ]
+      },
+      {
+        "label": "O(n²): quadratic",
+        "kind": "Quadratic",
+        "body": [
+          "Every item is compared with every other: a loop inside a loop. Twice the input, <strong>four times</strong> the work.",
+          "Fine for 8 items. For a million it is a trillion steps, and it is usually the first thing worth fixing."
+        ],
+        "note": {
+          "title": "Rule of thumb",
+          "icon": "bolt",
+          "text": "Much of this course is turning an O(n²) idea into O(n) or O(n log n)."
+        },
+        "state": {
+          "n": 8,
+          "focus": "quad"
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "O(1)",
+              "detail": "constant",
+              "value": 1,
+              "active": false
+            },
+            {
+              "label": "O(log n)",
+              "detail": "logarithmic",
+              "value": 3,
+              "active": false
+            },
+            {
+              "label": "O(n)",
+              "detail": "linear",
+              "value": 8,
+              "active": false
+            },
+            {
+              "label": "O(n²)",
+              "detail": "quadratic",
+              "value": 64,
+              "active": true
+            }
+          ],
+          "note": "Steps for n = 8 items."
+        },
+        "lines": [
+          11,
+          12,
+          13,
+          14
+        ]
+      }
+    ]
+  },
+  {
+    "id": "stacks",
+    "title": "Stacks",
+    "sceneType": "stack-scene (input tray + vertical stack + output tray)",
+    "sceneConfig": {
+      "items": {
+        "b10": "10",
+        "b20": "20",
+        "b30": "30",
+        "b40": "40",
+        "f1": "main()",
+        "f2": "load()",
+        "f3": "parse()"
+      }
+    },
+    "cards": [
+      {
+        "type": "explain"
+      },
+      {
+        "type": "code",
+        "source": "push(x):\n    put x on top\n\npop():\n    if the stack is empty: error\n    take the top item off\n    return it\n\ntop():\n    return the top item, leaving it there\n\nempty():\n    return whether nothing is left"
+      }
+    ],
+    "steps": [
+      {
+        "label": "What is a stack?",
+        "kind": "Concept",
+        "body": [
+          "A stack is a pile. You can add to the top and take from the top, and that is all.",
+          "So the last item you put on is the first one you get back: <strong>LIFO</strong>, last in, first out."
+        ],
+        "note": {
+          "title": "Picture it",
+          "text": "A pile of plates. Nobody pulls one out from the middle."
+        },
+        "state": {
+          "stack": [
+            "b10",
+            "b20",
+            "b30"
+          ],
+          "inbox": "b40"
+        }
+      },
+      {
+        "label": "Push",
+        "kind": "Operation",
+        "body": [
+          "<strong>push(x)</strong> puts a new item on top. Here 40 leaves the input tray and lands on the pile.",
+          "Nothing underneath has to move, so a push costs the same whether the stack holds three items or three million."
+        ],
+        "note": {
+          "title": "Cost",
+          "icon": "bolt",
+          "text": "O(1): one step, however tall the stack is."
+        },
+        "state": {
+          "stack": [
+            "b10",
+            "b20",
+            "b30",
+            "b40"
+          ],
+          "op": "push"
+        },
+        "lines": [
+          1,
+          2
+        ]
+      },
+      {
+        "label": "Top",
+        "kind": "Operation",
+        "body": [
+          "<strong>top()</strong> tells you what is on top without taking it off. You will also see it called <em>peek</em>.",
+          "The stack is exactly as it was afterwards."
+        ],
+        "note": {
+          "title": "Cost",
+          "icon": "bolt",
+          "text": "O(1): the top is always in the same place."
+        },
+        "state": {
+          "stack": [
+            "b10",
+            "b20",
+            "b30",
+            "b40"
+          ],
+          "op": "top",
+          "peek": true,
+          "say": {
+            "top": "top() → 40"
+          }
+        },
+        "lines": [
+          9,
+          10
+        ]
+      },
+      {
+        "label": "Pop",
+        "kind": "Operation",
+        "body": [
+          "<strong>pop()</strong> removes the top item and hands it back. It is the only way to take anything out of a stack.",
+          "40 was the last block in, so it is the first one out."
+        ],
+        "note": {
+          "title": "Watch out",
+          "icon": "alert",
+          "text": "Popping an empty stack is an error. Check empty() first."
+        },
+        "state": {
+          "stack": [
+            "b10",
+            "b20",
+            "b30"
+          ],
+          "out": [
+            "b40"
+          ],
+          "op": "pop",
+          "say": {
+            "out": "pop() → 40"
+          }
+        },
+        "lines": [
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "label": "Last in, first out",
+        "kind": "Idea",
+        "body": [
+          "Pop again and 30 comes out. The blocks went in as 10, 20, 30, 40 and they are leaving as 40, 30, …",
+          "A stack always gives things back in the reverse of the order they arrived."
+        ],
+        "note": {
+          "title": "Notice",
+          "text": "To reach 10 at the bottom, everything above it has to come off first."
+        },
+        "state": {
+          "stack": [
+            "b10",
+            "b20"
+          ],
+          "out": [
+            "b40",
+            "b30"
+          ],
+          "op": "pop",
+          "say": {
+            "out": "pop() → 30"
+          }
+        },
+        "lines": [
+          4,
+          5,
+          6,
+          7
+        ]
+      },
+      {
+        "label": "Where you meet them",
+        "kind": "In practice",
+        "body": [
+          "Each time a function calls another, the computer pushes a frame onto the <strong>call stack</strong>. When the function returns, its frame is popped and the caller carries on.",
+          "Undo history and the browser’s Back button work the same way."
+        ],
+        "note": {
+          "title": "By the way",
+          "text": "“Stack overflow” is this stack running out of room, usually from recursion that never stops."
+        },
+        "state": {
+          "stack": [
+            "f1",
+            "f2",
+            "f3"
+          ],
+          "cascade": true
+        }
+      }
+    ]
+  },
+  {
+    "id": "binary-trees",
+    "title": "Binary Trees",
+    "sceneType": "tree-scene (isometric nodes + parent-child links + optional depth levels)",
+    "sceneConfig": {
+      "labels": {
+        "a": "A",
+        "b": "B",
+        "c": "C",
+        "d": "D",
+        "e": "E",
+        "f": "F",
+        "g": "G",
+        "h": "H",
+        "i": "I",
+        "j": "J",
+        "k": "K",
+        "l": "L",
+        "m": "M",
+        "n": "N",
+        "o": "O"
+      },
+      "spread": [
+        192.5,
+        96.25
+      ],
+      "room": [
+        220,
+        110,
+        68.75
+      ]
+    },
+    "cards": [
+      {
+        "type": "explain"
+      },
+      {
+        "type": "code",
+        "source": "node:\n    value\n    left       // another node, or nothing\n    right      // another node, or nothing\n\ntree:\n    root       // the one node with no parent"
+      },
+      {
+        "type": "facts",
+        "title": "This tree"
+      }
+    ],
+    "steps": [
+      {
+        "label": "One node, two children",
+        "kind": "Concept",
+        "body": [
+          "A linked-list node points at one other node. Give a node <strong>two</strong> pointers, <em>left</em> and <em>right</em>, and the list becomes a tree.",
+          "A is the <strong>root</strong>: the one node nothing points at. B and C are its <strong>children</strong>, and A is their <strong>parent</strong>."
+        ],
+        "note": {
+          "title": "Picture it",
+          "text": "A family tree drawn with the oldest ancestor at the top."
+        },
+        "state": {
+          "tree": {
+            "a": "",
+            "b": "L",
+            "c": "R"
+          },
+          "say": {
+            "at": "a",
+            "text": "the root"
+          }
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "Nodes",
+              "value": 3
+            },
+            {
+              "label": "Leaves",
+              "detail": "no children",
+              "value": 2
+            },
+            {
+              "label": "Height",
+              "detail": "longest way down",
+              "value": 1
+            }
+          ]
+        },
+        "lines": [
+          1,
+          2,
+          3,
+          4
+        ]
+      },
+      {
+        "label": "It keeps branching",
+        "kind": "Concept",
+        "body": [
+          "Each child can have two children of its own, and so on down.",
+          "A node with no children is a <strong>leaf</strong>. D, E, F and G are the leaves here: every way down from the root ends at one."
+        ],
+        "state": {
+          "tree": {
+            "a": "",
+            "b": "L",
+            "c": "R",
+            "d": "LL",
+            "e": "LR",
+            "f": "RL",
+            "g": "RR"
+          },
+          "lit": [
+            "d",
+            "e",
+            "f",
+            "g"
+          ],
+          "say": {
+            "at": "d",
+            "text": "a leaf"
+          }
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "Nodes",
+              "value": 7
+            },
+            {
+              "label": "Leaves",
+              "detail": "no children",
+              "value": 4
+            },
+            {
+              "label": "Height",
+              "detail": "longest way down",
+              "value": 2
+            }
+          ]
+        }
+      },
+      {
+        "label": "Depth and height",
+        "kind": "Measure",
+        "body": [
+          "A node’s <strong>depth</strong> is how many branches lie between it and the root. The root is at depth 0, its children at depth 1.",
+          "The tree’s <strong>height</strong> is the depth of its deepest leaf: here, 2. Most of what a tree costs to use depends on its height."
+        ],
+        "state": {
+          "tree": {
+            "a": "",
+            "b": "L",
+            "c": "R",
+            "d": "LL",
+            "e": "LR",
+            "f": "RL",
+            "g": "RR"
+          },
+          "levels": true
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "Nodes",
+              "value": 7
+            },
+            {
+              "label": "Leaves",
+              "detail": "no children",
+              "value": 4
+            },
+            {
+              "label": "Height",
+              "detail": "longest way down",
+              "value": 2
+            }
+          ]
+        }
+      },
+      {
+        "label": "Trees inside trees",
+        "kind": "Concept",
+        "body": [
+          "Look only at B and everything below it. That is a tree too, with B as its root: a <strong>subtree</strong>.",
+          "Every node is the root of its own subtree. This is why so much tree code is recursive: do the job for a node, then for its left subtree, then its right."
+        ],
+        "state": {
+          "tree": {
+            "a": "",
+            "b": "L",
+            "c": "R",
+            "d": "LL",
+            "e": "LR",
+            "f": "RL",
+            "g": "RR"
+          },
+          "lit": [
+            "b",
+            "d",
+            "e"
+          ],
+          "dim": [
+            "a",
+            "c",
+            "f",
+            "g"
+          ],
+          "say": {
+            "at": "b",
+            "text": "a subtree"
+          }
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "Nodes",
+              "value": 3
+            },
+            {
+              "label": "Leaves",
+              "detail": "no children",
+              "value": 2
+            },
+            {
+              "label": "Height",
+              "detail": "longest way down",
+              "value": 1
+            }
+          ],
+          "note": "Counting only the subtree under B."
+        }
+      },
+      {
+        "label": "How much fits",
+        "kind": "Growth",
+        "body": [
+          "Every level can hold twice as many nodes as the one above: 1, 2, 4, 8. One more level roughly doubles the whole tree.",
+          "So a full tree of height 3 holds 15 nodes, and one of height 20 holds over two million. A lot of data is only a few steps from the root."
+        ],
+        "note": {
+          "title": "Remember",
+          "icon": "bolt",
+          "text": "n nodes can fit in a height of about log₂ n. That is where tree speed comes from."
+        },
+        "state": {
+          "tree": {
+            "a": "",
+            "b": "L",
+            "c": "R",
+            "d": "LL",
+            "e": "LR",
+            "f": "RL",
+            "g": "RR",
+            "h": "LLL",
+            "i": "LLR",
+            "j": "LRL",
+            "k": "LRR",
+            "l": "RLL",
+            "m": "RLR",
+            "n": "RRL",
+            "o": "RRR"
+          },
+          "spread": [
+            220,
+            110,
+            68.75
+          ],
+          "levels": true
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "Nodes",
+              "value": 15
+            },
+            {
+              "label": "Leaves",
+              "detail": "no children",
+              "value": 8
+            },
+            {
+              "label": "Height",
+              "detail": "longest way down",
+              "value": 3
+            }
+          ]
+        }
+      },
+      {
+        "label": "Not always tidy",
+        "kind": "Watch out",
+        "body": [
+          "Nothing says a binary tree must be full. “Binary” only promises <em>at most</em> two children.",
+          "This one has five nodes and is as tall as the fifteen-node tree was. Taken to the extreme, with one child everywhere, a tree is just a linked list."
+        ],
+        "state": {
+          "tree": {
+            "a": "",
+            "b": "L",
+            "c": "R",
+            "g": "RR",
+            "o": "RRR"
+          },
+          "spread": [
+            220,
+            110,
+            68.75
+          ],
+          "levels": true
+        },
+        "facts": {
+          "rows": [
+            {
+              "label": "Nodes",
+              "value": 5
+            },
+            {
+              "label": "Leaves",
+              "detail": "no children",
+              "value": 2
+            },
+            {
+              "label": "Height",
+              "detail": "longest way down",
+              "value": 3
+            }
+          ],
+          "note": "Same height, a third of the nodes."
+        }
+      }
+    ]
+  }
+]

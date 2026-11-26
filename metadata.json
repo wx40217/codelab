@@ -1,0 +1,8 @@
+{
+  "name": "指令实验室 · CodeLab",
+  "description": "面向 9-12 岁零基础孩子的交互式编程启蒙实验室，通过 2D SVG 机器人网格舞台、中英双语同步代码高亮与动手微挑战培养计算机思维。",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
