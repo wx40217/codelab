@@ -8,7 +8,17 @@ interface RobotLoopSceneProps {
 }
 
 export function RobotLoopScene({ state }: RobotLoopSceneProps) {
-  const { trackLength, robotAt, goalAt, wallAt, visited, status, tagText } = state;
+  const {
+    trackLength,
+    robotAt,
+    goalAt,
+    wallAt,
+    visited,
+    radarAt,
+    baseLabel,
+    status,
+    tagText,
+  } = state;
 
   const tileSize = 46;
   const tileGap = 4;
@@ -31,7 +41,7 @@ export function RobotLoopScene({ state }: RobotLoopSceneProps) {
       className="scene"
       viewBox="-95 -95 470 295"
       role="img"
-      aria-label={`2.5D 等距机器人循环走廊，阿派位于第 ${robotAt} 格`}
+      aria-label={`2.5D 等距机器人走廊，阿派位于第 ${robotAt} 格`}
     >
       <IsoDefs />
 
@@ -46,7 +56,7 @@ export function RobotLoopScene({ state }: RobotLoopSceneProps) {
         tone="ink"
         hatched={true}
         showShadow={true}
-        leftText="等距机器人走廊"
+        leftText={baseLabel ?? '等距机器人走廊'}
         leftTextSize={11}
       />
 
@@ -56,14 +66,17 @@ export function RobotLoopScene({ state }: RobotLoopSceneProps) {
         const isVisited = visited.includes(idx);
         const isGoal = idx === goalAt;
         const isWall = idx === wallAt;
+        const isRadar = radarAt === idx;
 
         const tileTone = isWall
           ? 'dim'
-          : isGoal && status === 'victory'
+          : isRadar
             ? 'found'
-            : isVisited
-              ? 'active'
-              : 'paper';
+            : isGoal && status === 'victory'
+              ? 'found'
+              : isVisited
+                ? 'active'
+                : 'paper';
 
         return (
           <g key={`tile-${idx}`}>
@@ -83,19 +96,24 @@ export function RobotLoopScene({ state }: RobotLoopSceneProps) {
 
             {/* Goal Energy Cube (hovering softly until collected) */}
             {isGoal && status !== 'victory' && (
-              <IsoBox
-                x={tx + 12}
-                y={12}
-                z={15}
-                dx={22}
-                dy={22}
-                dz={22}
-                tone="found"
-                hatched={true}
-                showShadow={true}
-                topText="★"
-                topTextSize={15}
-              />
+              <motion.g
+                animate={{ y: [0, -5, 0] }}
+                transition={{ duration: 1.9, repeat: Infinity, ease: 'easeInOut' }}
+              >
+                <IsoBox
+                  x={tx + 12}
+                  y={12}
+                  z={15}
+                  dx={22}
+                  dy={22}
+                  dz={22}
+                  tone="found"
+                  hatched={true}
+                  showShadow={true}
+                  topText="★"
+                  topTextSize={15}
+                />
+              </motion.g>
             )}
 
             {/* Tall Hatched Obstacle Wall */}

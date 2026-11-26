@@ -342,7 +342,7 @@ export function FinderModal({
             <kbd>ESC</kbd> 关闭
           </span>
           <span style={{ marginLeft: 'auto' }} className="tabular-nums">
-            共 {totalLessons} 课 · 3 节互动示范课已开放
+            全部 {totalLessons} 节 2.5D 互动课已开放
           </span>
         </div>
       </div>

@@ -5,9 +5,17 @@ import { IsoBox, IsoDefs, IsoTag } from './IsoPrimitives';
 
 interface StackPlatesSceneProps {
   state: StackPlatesSceneState;
+  onClickInbox?: () => void;
+  onClickTop?: () => void;
+  onClickBlocked?: (label: string) => void;
 }
 
-export function StackPlatesScene({ state }: StackPlatesSceneProps) {
+export function StackPlatesScene({
+  state,
+  onClickInbox,
+  onClickTop,
+  onClickBlocked,
+}: StackPlatesSceneProps) {
   const { stack, inbox, out, highlightTop, op, tagText, tagAnchor = 'top' } = state;
 
   const blockW = 84;
@@ -127,6 +135,9 @@ export function StackPlatesScene({ state }: StackPlatesSceneProps) {
             showShadow={true}
             leftText={inbox.label}
             leftTextSize={13.5}
+            interactive={Boolean(onClickInbox)}
+            onClick={onClickInbox}
+            ariaLabel={`点击将「${inbox.label}」压入栈顶`}
           />
         )}
       </AnimatePresence>
@@ -138,6 +149,7 @@ export function StackPlatesScene({ state }: StackPlatesSceneProps) {
           const extraLift = isTop && highlightTop ? 8 : 0;
           const z = idx * (blockH + gapZ) + 2 + extraLift;
           const tone = isTop && highlightTop ? (op === 'top' ? 'found' : 'active') : 'paper';
+          const clickable = isTop ? Boolean(onClickTop) : Boolean(onClickBlocked);
 
           return (
             <IsoBox
@@ -153,6 +165,19 @@ export function StackPlatesScene({ state }: StackPlatesSceneProps) {
               showShadow={idx === 0}
               leftText={item.label}
               leftTextSize={13.5}
+              interactive={clickable}
+              onClick={
+                isTop
+                  ? onClickTop
+                  : onClickBlocked
+                    ? () => onClickBlocked(item.label)
+                    : undefined
+              }
+              ariaLabel={
+                isTop
+                  ? `栈顶方块「${item.label}」`
+                  : `被压住的方块「${item.label}」`
+              }
             />
           );
         })}

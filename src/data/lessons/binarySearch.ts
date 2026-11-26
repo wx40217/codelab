@@ -1,0 +1,151 @@
+import { BilingualCodeLine, Lesson } from '../../types/course';
+
+const BSEARCH_CODE: BilingualCodeLine[] = [
+  { line: 1, indent: 0, cn: '二分查找(排好队的数, 目标):', py: 'def binary_search(nums, target):', isHead: true },
+  { line: 2, indent: 4, cn: '左 = 0, 右 = 最后一个', py: 'lo, hi = 0, len(nums) - 1' },
+  { line: 3, indent: 4, cn: '重复 只要 左 <= 右:', py: 'while lo <= hi:' },
+  { line: 4, indent: 8, cn: '中 = (左 + 右) // 2', py: 'mid = (lo + hi) // 2' },
+  { line: 5, indent: 8, cn: '如果 数[中] == 目标: 返回 中', py: 'if nums[mid] == target: return mid' },
+  { line: 6, indent: 8, cn: '如果 数[中] < 目标: 左 = 中 + 1', py: 'elif nums[mid] < target: lo = mid + 1' },
+  { line: 7, indent: 8, cn: '否则: 右 = 中 - 1', py: 'else: hi = mid - 1' },
+];
+
+export const binarySearchLesson: Lesson = {
+  id: 'binary-search-guess',
+  chapterId: 'ch-4',
+  chapterNum: '04',
+  orderInChapter: 2,
+  totalInChapter: 3,
+  title: '猜数字二分魔法',
+  subtitle: '每次直接扔掉一半！为什么猜数字总能飞速猜中？',
+  concepts: ['二分查找', '折半', '猜数字', '有序', 'O(log n)'],
+  status: 'ready',
+  factsTitle: '折半范围状态',
+  codeLines: BSEARCH_CODE,
+  steps: [
+    {
+      id: 'bs1-sorted',
+      label: '秘密前提：先排好队',
+      kind: '概念',
+      companionMood: 'curious',
+      companionLine: '我们要在这 7 个从小到大排好队的数字里，用最快速度找出神秘数字 23！',
+      body: [
+        '如果一个一个从左边翻到右边，最倒霉要翻 7 次。但因为这排方块已经<strong>从小到大排好队</strong>，我们就能施展<strong>二分查找</strong>魔法！',
+        '秘诀只有一句话：<strong>永远先翻正中间那一块！</strong>',
+      ],
+      state: {
+        scene: 'iso-strip',
+        baseLabel: '已排序阵列（寻找 23）',
+        pointerIdx: 3,
+        tagText: '第 1 步：直接看正中间 [14]',
+        tagTone: 'coral',
+        items: [
+          { id: 'n0', top: '3', sub: '[0]', tone: 'paper' },
+          { id: 'n1', top: '7', sub: '[1]', tone: 'paper' },
+          { id: 'n2', top: '11', sub: '[2]', tone: 'paper' },
+          { id: 'n3', top: '14', sub: '中', tone: 'active', lift: 10 },
+          { id: 'n4', top: '19', sub: '[4]', tone: 'paper' },
+          { id: 'n5', top: '23', sub: '[5]', tone: 'paper' },
+          { id: 'n6', top: '30', sub: '[6]', tone: 'paper' },
+        ],
+      },
+      lines: [2, 4],
+      facts: {
+        rows: [
+          { label: '目标数字', value: 23 },
+          { label: '正中间是', value: 14, active: true },
+          { label: '剩余候选', value: '7 个' },
+        ],
+        note: '14 比目标 23 小，猜猜左边那几个数还有可能是 23 吗？',
+      },
+    },
+    {
+      id: 'bs2-cut',
+      label: '一刀砍掉整整一半！',
+      kind: '规律',
+      companionMood: 'excited',
+      companionLine: '既然 14 都比 23 小，那比 14 更小的 3、7、11 肯定全不对！咔嚓，直接全变灰扔掉！',
+      body: [
+        '因为数字排好队了，<strong>14 < 23</strong> 意味着 14 和它左边所有方块（3、7、11）全都不可能是答案！',
+        '短短 1 步，我们就直接把<strong>整整一半</strong>候选方块淘汰变灰，只剩下右边的 [19, 23, 30] 三个数！',
+      ],
+      quiz: {
+        id: 'quiz-bsearch-100',
+        question: '先猜一猜：在 1 到 100 里玩猜数字，每次都猜正中间扔掉一半，最多猜几次一定能猜中？',
+        options: [
+          { label: '50 次', feedback: '每次砍掉一半降得飞快：100→50→25→12→6→3→1，数数砍了几刀！' },
+          { label: '7 次', correct: true, feedback: '太神奇了吧！100→50→25→12→6→3→1，最多 7 次百分百必中！' },
+          { label: '25 次', feedback: '远不用 25 次哦！记住折半的力量是指数级的～' },
+        ],
+        rewardStars: 10,
+      },
+      state: {
+        scene: 'iso-strip',
+        baseLabel: '淘汰左半边，看新中间！',
+        pointerIdx: 5,
+        tagText: '新中间正好是 23！命中 ★',
+        tagTone: 'coral',
+        items: [
+          { id: 'n0', top: '3', sub: '×', tone: 'dim' },
+          { id: 'n1', top: '7', sub: '×', tone: 'dim' },
+          { id: 'n2', top: '11', sub: '×', tone: 'dim' },
+          { id: 'n3', top: '14', sub: '×', tone: 'dim' },
+          { id: 'n4', top: '19', sub: '[4]', tone: 'paper' },
+          { id: 'n5', top: '23', sub: '中', tone: 'found', lift: 14 },
+          { id: 'n6', top: '30', sub: '[6]', tone: 'paper' },
+        ],
+      },
+      lines: [5, 6],
+      facts: {
+        rows: [
+          { label: '已淘汰', value: '4 个方块' },
+          { label: '第 2 次猜中间', value: '23（命中！）', active: true },
+          { label: '总共只用', value: '2 步' },
+        ],
+        note: '从 7 个数里找到 23，只花了短短 2 步！',
+      },
+    },
+    {
+      id: 'bs3-ready',
+      label: '换你来施展折半魔法',
+      kind: '实战',
+      companionMood: 'proud',
+      companionLine: '我在 7 个盖着的魔法盒里藏了数字 27，试试用二分法 3 步之内把它揪出来！',
+      body: [
+        '记住二分魔法的两条黄金法则：① 数据必须<strong>先排好序</strong>；② 每次直接点<strong>正中间</strong>，根据提示淘汰一整半！',
+        '点击「进入动手挑战」，亲自点击 2.5D 舞台中间的方块，看看你几步就能找到藏起来的 <strong>27</strong>！',
+      ],
+      state: {
+        scene: 'iso-strip',
+        baseLabel: '猜数字挑战预告',
+        pointerIdx: 3,
+        tagText: '准备用折半法找 27！',
+        tagTone: 'dark',
+        items: [
+          { id: 'c0', top: '?', sub: '[0]', tone: 'paper' },
+          { id: 'c1', top: '?', sub: '[1]', tone: 'paper' },
+          { id: 'c2', top: '?', sub: '[2]', tone: 'paper' },
+          { id: 'c3', top: '?', sub: '中间', tone: 'active', lift: 8 },
+          { id: 'c4', top: '?', sub: '[4]', tone: 'paper' },
+          { id: 'c5', top: '?', sub: '[5]', tone: 'paper' },
+          { id: 'c6', top: '?', sub: '[6]', tone: 'paper' },
+        ],
+      },
+      lines: [3, 4, 5, 6, 7],
+      facts: {
+        rows: [
+          { label: '隐藏目标', value: 27, active: true },
+          { label: '推荐策略', value: '每次点中间方块' },
+        ],
+        note: '开始寻宝吧！',
+      },
+    },
+  ],
+  challenge: {
+    type: 'binary-search-game',
+    title: '二分寻宝：最多 3 步揪出数字 27',
+    prompt: '这 7 个盖着的方块已经从小到大排好队！点击舞台上的方块翻开它，程序会自动把不可能的那一半淘汰变灰！',
+    values: [5, 10, 15, 20, 27, 34, 42],
+    targetValue: 27,
+  },
+};

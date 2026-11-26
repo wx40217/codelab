@@ -36,6 +36,8 @@ export const robotLoopLesson: Lesson = {
         '小机器人「阿派」站在 0 号石砖上，能量方块在 <strong>5 号格</strong>，尽头的 <strong>6 号格</strong>立着一堵厚厚的斜线障碍墙。',
         '如果老老实实把「向前跳 1 格」连写 5 遍，万一能量方块在 100 格之外，写代码的手都要写酸啦！',
       ],
+      companionMood: 'curious',
+      companionLine: '前面 5 格就是闪闪发光的能量块 ★，但我好怕把指令写到手酸呀…',
       note: {
         title: '观察规律',
         icon: 'bulb',
@@ -135,6 +137,8 @@ export const robotLoopLesson: Lesson = {
         '因为还没数够 5 次，电脑自动跳回循环开头，再次执行<strong>同一行</strong>第 3 行指令！',
         '仔细对比舞台和代码：高亮的始终是同一行代码，但阿派已经跳到了 <strong>2 号格</strong>。',
       ],
+      companionMood: 'happy',
+      companionLine: '点一下舞台左下角的「▶ 回放跳跃」，就能看我一步一步蹦跶过来！',
       lines: [3],
       state: {
         scene: 'robot-loop',
@@ -195,6 +199,18 @@ export const robotLoopLesson: Lesson = {
         '第 5 轮落地！阿派稳稳停在 <strong>5 号格</strong>吸收能量块，计数器数满 5 后循环自动结束。',
         '一格不多、一格不少，刚好停在 6 号障碍墙前面没有撞上去！',
       ],
+      companionMood: 'proud',
+      companionLine: '耶！拿到能量块啦！等等，要是刚才不小心把 5 写成了 6，会发生什么？',
+      quiz: {
+        id: 'quiz-loop-overflow',
+        question: '先猜一猜：如果把「重复 5 次」改成「重复 6 次」，阿派会怎样？',
+        options: [
+          { label: '停在 5 号格不动', feedback: '机器人可不会自己刹车哦，你让它跳 6 次它就会死心塌地跳第 6 次！' },
+          { label: '咚！一头撞上 6 号障碍墙', correct: true, feedback: '猜得太准了！多走 1 步撞墙就是程序员最常遇到的「越界 Bug」！待会儿挑战里你甚至可以故意撞一次解锁隐藏彩蛋哦～' },
+          { label: '直接飞过障碍墙', feedback: '哈哈，阿派还没有装喷气背包呢，它只会直直往墙上撞！' },
+        ],
+        rewardStars: 10,
+      },
       lines: [2, 3],
       state: {
         scene: 'robot-loop',

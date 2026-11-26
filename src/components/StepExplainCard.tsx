@@ -1,13 +1,17 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import {
   AlertTriangle,
   ArrowLeft,
   ArrowRight,
+  CheckCircle2,
+  HelpCircle,
   Lightbulb,
   Sparkles,
   Zap,
 } from 'lucide-react';
 import { LessonStep } from '../types/course';
+import { playQuizCorrect, playQuizTryAgain } from '../utils/sound';
+import { PiBotAvatar } from './PiBotAvatar';
 
 interface StepExplainCardProps {
   step: LessonStep;
@@ -15,9 +19,11 @@ interface StepExplainCardProps {
   totalSteps: number;
   nextStepLabel?: string;
   challengeDone: boolean;
+  quizAlreadySolved: boolean;
   onPrev: () => void;
   onNext: () => void;
   onEnterChallenge: () => void;
+  onSolveQuiz: (quizId: string, rewardStars: number) => void;
 }
 
 /**
@@ -40,12 +46,34 @@ export function StepExplainCard({
   totalSteps,
   nextStepLabel,
   challengeDone,
+  quizAlreadySolved,
   onPrev,
   onNext,
   onEnterChallenge,
+  onSolveQuiz,
 }: StepExplainCardProps) {
   const isFirst = stepIndex === 0;
   const isLast = stepIndex >= totalSteps - 1;
+  const [pickedIdx, setPickedIdx] = useState<number | null>(null);
+
+  useEffect(() => {
+    setPickedIdx(null);
+  }, [step.id]);
+
+  const quiz = step.quiz;
+  const pickedOption = quiz && pickedIdx !== null ? quiz.options[pickedIdx] : undefined;
+
+  const handlePickOption = (idx: number) => {
+    if (!quiz) return;
+    setPickedIdx(idx);
+    const opt = quiz.options[idx];
+    if (opt.correct) {
+      playQuizCorrect();
+      onSolveQuiz(quiz.id, quiz.rewardStars ?? 10);
+    } else {
+      playQuizTryAgain();
+    }
+  };
 
   const renderNoteIcon = () => {
     const icon = step.note?.icon ?? 'bulb';
@@ -65,11 +93,135 @@ export function StepExplainCard({
 
       <h2 className="step-card__title">{step.label}</h2>
 
+      {/* Friendly Pi-Bot Companion Strip */}
+      {step.companionLine && (
+        <div
+          style={{
+            marginTop: 10,
+            padding: '8px 11px',
+            borderRadius: 10,
+            background: 'var(--paper-raised)',
+            border: '1px solid var(--line)',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+          }}
+        >
+          <PiBotAvatar
+            mood={
+              pickedOption?.correct
+                ? 'proud'
+                : pickedOption && !pickedOption.correct
+                  ? 'oops'
+                  : step.companionMood ?? 'happy'
+            }
+            size={34}
+          />
+          <p
+            style={{
+              margin: 0,
+              fontSize: 12.8,
+              lineHeight: 1.45,
+              color: 'var(--ink)',
+              fontWeight: 550,
+            }}
+          >
+            {step.companionLine}
+          </p>
+        </div>
+      )}
+
       <div className="step-card__body">
         {step.body.map((paragraph, idx) => (
           <p key={idx}>{renderRichCopy(paragraph)}</p>
         ))}
       </div>
+
+      {/* Playful "先猜一猜" Inline Micro-Prediction Quiz */}
+      {quiz && (
+        <div
+          style={{
+            marginTop: 12,
+            padding: '11px 12px',
+            borderRadius: 10,
+            background: 'var(--paper-raised)',
+            border: '1px solid var(--line-strong)',
+            display: 'grid',
+            gap: 9,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+            <span
+              className="eyebrow"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 5, color: 'var(--coral-ink)' }}
+            >
+              <HelpCircle size={13} style={{ color: 'var(--coral)' }} />
+              先猜一猜
+            </span>
+            <span
+              className="chip"
+              style={{
+                height: 20,
+                fontSize: 11,
+                padding: '0 7px',
+                background: quizAlreadySolved || pickedOption?.correct ? 'var(--coral)' : 'var(--coral-100)',
+                color: quizAlreadySolved || pickedOption?.correct ? 'var(--on-coral)' : 'var(--coral-ink)',
+              }}
+            >
+              {quizAlreadySolved || pickedOption?.correct ? '已答对 ★' : `+${quiz.rewardStars ?? 10} ★`}
+            </span>
+          </div>
+
+          <p style={{ margin: 0, fontSize: 13.4, fontWeight: 650, color: 'var(--ink)', lineHeight: 1.45 }}>
+            {quiz.question}
+          </p>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
+            {quiz.options.map((opt, idx) => {
+              const isPicked = pickedIdx === idx;
+              const isRight = Boolean(opt.correct);
+              return (
+                <button
+                  key={opt.label}
+                  type="button"
+                  className={`btn ${isPicked && isRight ? 'btn--primary' : ''}`}
+                  style={{
+                    height: 32,
+                    padding: '0 12px',
+                    fontSize: 13,
+                    borderColor:
+                      isPicked && !isRight
+                        ? 'var(--coral-300)'
+                        : undefined,
+                    background:
+                      isPicked && !isRight
+                        ? 'var(--coral-50)'
+                        : undefined,
+                  }}
+                  onClick={() => handlePickOption(idx)}
+                >
+                  {isPicked && isRight && <CheckCircle2 size={13} />}
+                  <span>{opt.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {pickedOption && (
+            <p
+              style={{
+                margin: 0,
+                fontSize: 12.6,
+                lineHeight: 1.45,
+                color: pickedOption.correct ? 'var(--coral-ink)' : 'var(--ink-2)',
+                fontWeight: pickedOption.correct ? 650 : 500,
+              }}
+            >
+              {pickedOption.feedback}
+            </p>
+          )}
+        </div>
+      )}
 
       {step.note && (
         <div className="note" role="note">

@@ -31,6 +31,8 @@ export const binaryBitsLesson: Lesson = {
         '电脑其实并不认识 0 到 9。它肚子里装的，全是像小灯泡一样的微型开关：<strong>亮起代表 1</strong>，<strong>熄灭代表 0</strong>。',
         '这一个只能表示 0 或 1 的小格子，就叫做一个 <strong>比特（Bit）</strong>。现在最右边第 1 个开关亮起，代表数字 1。',
       ],
+      companionMood: 'curious',
+      companionLine: '嗨！我是阿派 🤖 试试直接用鼠标戳一下左边的 2.5D 开关方块，看看会发出什么声音！',
       note: {
         title: '注意',
         icon: 'bulb',
@@ -93,6 +95,18 @@ export const binaryBitsLesson: Lesson = {
         '想知道一串 0 和 1 代表几？超级简单：<strong>把所有亮着（为 1）的位子权重加起来</strong>！',
         '这里权重 <strong>4</strong> 和权重 <strong>1</strong> 两个等距开关同时升起亮灯，4 + 1 = <strong>5</strong>。',
       ],
+      companionMood: 'happy',
+      companionLine: '把亮着的硬币加起来就行！先来考考你的眼力～',
+      quiz: {
+        id: 'quiz-binary-5',
+        question: '先猜一猜：如果把权重 8 和权重 2 同时点亮（1010），代表数字几？',
+        options: [
+          { label: '82', feedback: '哈哈，不是拼在一起读哦！是把亮起来的权重做加法：8 + 2 = ?' },
+          { label: '10', correct: true, feedback: '答对啦！8 + 2 = 10，你瞬间就掌握二进制密码啦！' },
+          { label: '6', feedback: '再算算看～ 8 加上 2 会比 8 更大哦！' },
+        ],
+        rewardStars: 10,
+      },
       state: {
         scene: 'binary-bits',
         bits: [0, 1, 0, 1],
@@ -143,6 +157,18 @@ export const binaryBitsLesson: Lesson = {
         '如果 4 个开关全部打开（1111），8 + 4 + 2 + 1 = <strong>15</strong>。算上全关的 0，4 个开关一共能变出 <strong>16 种</strong>不同数字！',
         '如果再往左边多加 1 个开关（权重 16），能表示的数字范围瞬间就会再翻一倍。',
       ],
+      companionMood: 'excited',
+      companionLine: '4 个开关全亮啦！如果再往左多放 1 块新开关，它的权重应该是多少呢？',
+      quiz: {
+        id: 'quiz-binary-next-weight',
+        question: '脑筋急转弯：从右往左是 1、2、4、8，第 5 个开关的权重是多少？',
+        options: [
+          { label: '10', feedback: '差一点！记住规律：每往左一格不是加 2，而是「翻一倍」哦！' },
+          { label: '12', feedback: '8 翻一倍可不止 12 哦，再想想 8 × 2 等于几？' },
+          { label: '16', correct: true, feedback: '太聪明了！8 × 2 = 16！电脑的世界就是这样不断翻倍变强大的！' },
+        ],
+        rewardStars: 10,
+      },
       note: {
         title: '惊人的威力',
         icon: 'bolt',

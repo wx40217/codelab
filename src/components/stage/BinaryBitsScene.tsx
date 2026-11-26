@@ -26,6 +26,8 @@ export function BinaryBitsScene({ state, onToggleBit }: BinaryBitsSceneProps) {
   const tagAnchor = isoProject(anchorX, slotD / 2, anchorZ);
   const tagPos = { x: tagAnchor.x - 16, y: tagAnchor.y - 68 };
 
+  const canClick = Boolean(onToggleBit);
+
   return (
     <svg
       className="scene"
@@ -46,7 +48,7 @@ export function BinaryBitsScene({ state, onToggleBit }: BinaryBitsSceneProps) {
         tone="ink"
         hatched={true}
         showShadow={true}
-        leftText={interactive ? '点击开关方块切换 0 / 1' : '4 位二进制开关底座'}
+        leftText={interactive || canClick ? '点一点开关方块试试！' : '4 位二进制开关底座'}
         leftTextSize={11}
       />
 
@@ -90,8 +92,8 @@ export function BinaryBitsScene({ state, onToggleBit }: BinaryBitsSceneProps) {
               topTextSize={24}
               leftText={isOn ? '开' : '关'}
               leftTextSize={12}
-              interactive={Boolean(interactive && onToggleBit)}
-              onClick={interactive && onToggleBit ? () => onToggleBit(idx) : undefined}
+              interactive={canClick}
+              onClick={canClick ? () => onToggleBit?.(idx) : undefined}
               ariaLabel={`权重 ${WEIGHTS[idx]} 开关，当前为 ${bit}，点击切换`}
             />
 

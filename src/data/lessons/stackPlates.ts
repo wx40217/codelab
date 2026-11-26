@@ -38,6 +38,8 @@ export const stackPlatesLesson: Lesson = {
         '<strong>栈（Stack）</strong>就像厨房里一摞叠起来的盘子：新盘子只能叠到<strong>最顶上</strong>，拿盘子也只能从<strong>最顶上</strong>拿。',
         '所以最后放上去的那一块，一定会最先被拿出来——这就是程序员常说的 <strong>后进先出（LIFO）</strong>。',
       ],
+      companionMood: 'curious',
+      companionLine: '试试用鼠标点一下最底下的「画太阳」方块，猜猜能不能直接把它抽出来？',
       note: {
         title: '想象一下',
         icon: 'bulb',
@@ -128,6 +130,18 @@ export const stackPlatesLesson: Lesson = {
         '突然觉得小鸟画歪了，按一下「撤回键」！电脑立刻执行 <strong>弹出（Pop）</strong>，把最顶上的「画小鸟」移到右边输出托盘。',
         '刚才最后画的一步，第一个被撤掉，露出了下面的「画云朵」。',
       ],
+      companionMood: 'excited',
+      companionLine: '画小鸟被弹出来啦！如果现在再按一次撤回键，下一块飞出来的会是谁？',
+      quiz: {
+        id: 'quiz-stack-lifo',
+        question: '先猜一猜：现在栈里从下到上是【画太阳 → 涂蓝天 → 画云朵】，再按一次 Pop 会拿走哪块？',
+        options: [
+          { label: '画太阳', feedback: '画太阳被压在最底下动弹不得呢，只能拿最顶上那一块！' },
+          { label: '涂蓝天', feedback: '涂蓝天上面还压着一块云朵，要先拿走云朵才够得到它哦。' },
+          { label: '画云朵', correct: true, feedback: '答对啦！永远是「后进先出」，最顶上的画云朵第一个飞出来！' },
+        ],
+        rewardStars: 10,
+      },
       note: {
         title: '小心空栈',
         icon: 'alert',

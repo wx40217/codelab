@@ -6,36 +6,48 @@ import {
   Menu,
   Moon,
   Search,
+  Star,
   Sun,
   Trophy,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { ThemeMode } from '../types/course';
 
 interface TopbarProps {
   theme: ThemeMode;
+  stars: number;
+  badgeCount: number;
+  soundEnabled: boolean;
+  activeNav?: 'learn' | 'practice' | 'cheatsheet' | 'playgrounds' | 'badges';
   onToggleTheme: () => void;
+  onToggleSound: () => void;
   onOpenFinder: () => void;
+  onOpenPractice: () => void;
+  onOpenCheatsheet: () => void;
+  onOpenPlaygrounds: () => void;
+  onOpenBadges: () => void;
   onToggleMenu: () => void;
   onGoHome: () => void;
   onClickLearn: () => void;
-  onShowToast: (message: string) => void;
 }
-
-const SECONDARY_NAV = [
-  { id: 'practice', label: '练习', icon: Code2 },
-  { id: 'cheatsheet', label: '速查表', icon: FileText },
-  { id: 'challenge', label: '挑战', icon: Trophy },
-  { id: 'progress', label: '进度', icon: BarChart3 },
-] as const;
 
 export function Topbar({
   theme,
+  stars,
+  badgeCount,
+  soundEnabled,
+  activeNav = 'learn',
   onToggleTheme,
+  onToggleSound,
   onOpenFinder,
+  onOpenPractice,
+  onOpenCheatsheet,
+  onOpenPlaygrounds,
+  onOpenBadges,
   onToggleMenu,
   onGoHome,
   onClickLearn,
-  onShowToast,
 }: TopbarProps) {
   const isMac =
     typeof navigator !== 'undefined' && /Mac|iPhone|iPad|iPod/i.test(navigator.platform);
@@ -95,29 +107,53 @@ export function Topbar({
       <nav className="nav" aria-label="主导航">
         <button
           type="button"
-          className="nav__item is-active"
+          className={`nav__item ${activeNav === 'learn' ? 'is-active' : ''}`}
           onClick={onClickLearn}
-          aria-current="page"
+          aria-current={activeNav === 'learn' ? 'page' : undefined}
         >
           <BookOpen size={17} strokeWidth={2.1} />
           <span>学习</span>
         </button>
 
-        {SECONDARY_NAV.map((item) => {
-          const Icon = item.icon;
-          return (
-            <button
-              key={item.id}
-              type="button"
-              className="nav__item"
-              onClick={() => onShowToast(`${item.label}模块即将推出，先在课尾体验动手挑战吧！`)}
-              title={`${item.label}（即将推出）`}
-            >
-              <Icon size={17} strokeWidth={1.9} />
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
+        <button
+          type="button"
+          className={`nav__item ${activeNav === 'practice' ? 'is-active' : ''}`}
+          onClick={onOpenPractice}
+          title="趣味刷题练习道场"
+        >
+          <Code2 size={17} strokeWidth={1.9} />
+          <span>练习</span>
+        </button>
+
+        <button
+          type="button"
+          className={`nav__item ${activeNav === 'cheatsheet' ? 'is-active' : ''}`}
+          onClick={onOpenCheatsheet}
+          title="双语魔法指令速查表"
+        >
+          <FileText size={17} strokeWidth={1.9} />
+          <span>速查表</span>
+        </button>
+
+        <button
+          type="button"
+          className={`nav__item ${activeNav === 'playgrounds' ? 'is-active' : ''}`}
+          onClick={onOpenPlaygrounds}
+          title="直达全部 14 关 2.5D 动手挑战游乐场"
+        >
+          <Trophy size={17} strokeWidth={1.9} />
+          <span>挑战</span>
+        </button>
+
+        <button
+          type="button"
+          className={`nav__item ${activeNav === 'badges' ? 'is-active' : ''}`}
+          onClick={onOpenBadges}
+          title="查看能量星与探险徽章墙"
+        >
+          <BarChart3 size={17} strokeWidth={1.9} />
+          <span>勋章</span>
+        </button>
       </nav>
 
       <div className="topbar__tools">
@@ -134,12 +170,41 @@ export function Topbar({
 
         <button
           type="button"
+          className="tool-btn"
+          onClick={onOpenBadges}
+          title={`已收集 ${stars} 颗能量星、${badgeCount} 枚徽章，点击打开勋章墙`}
+          aria-label={`已收集 ${stars} 颗能量星，打开勋章墙`}
+        >
+          <Star size={15} fill="var(--coral)" color="var(--coral)" />
+          <span className="tabular-nums">{stars}</span>
+        </button>
+
+        <button
+          type="button"
+          className="tool-btn tool-btn--icon"
+          onClick={onToggleSound}
+          aria-label={soundEnabled ? '关闭互动音效' : '开启互动音效'}
+          title={soundEnabled ? '互动音效：已开启' : '互动音效：已静音'}
+        >
+          {soundEnabled ? (
+            <Volume2 size={17} strokeWidth={2} />
+          ) : (
+            <VolumeX size={17} strokeWidth={2} style={{ color: 'var(--ink-3)' }} />
+          )}
+        </button>
+
+        <button
+          type="button"
           className="tool-btn tool-btn--icon"
           onClick={onToggleTheme}
           aria-label={theme === 'dark' ? '切换到浅色纸感模式' : '切换到深色模式'}
           title={theme === 'dark' ? '切换浅色纸感模式' : '切换深色模式'}
         >
-          {theme === 'dark' ? <Sun size={17} strokeWidth={2} /> : <Moon size={17} strokeWidth={2} />}
+          {theme === 'dark' ? (
+            <Sun size={17} strokeWidth={2} />
+          ) : (
+            <Moon size={17} strokeWidth={2} />
+          )}
         </button>
       </div>
     </header>
