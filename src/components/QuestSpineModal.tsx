@@ -105,22 +105,22 @@ export function QuestSpineModal({
 
             <div style={{ minWidth: 0, flex: 1, display: 'grid', gap: 7 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0, lineHeight: 1.25 }}>
+                <h2 style={{ fontSize: 20, fontWeight: 800, margin: 0, lineHeight: 1.3 }}>
                   {overview.allComplete
-                    ? '终极形态已觉醒！阿派全副武装啦！'
+                    ? '阿派满血复活啦！'
                     : isFirstWelcome
-                      ? '嗨！我是迫降在纸桌上的阿派 #314！'
-                      : `已修复 ${overview.unlockedPartsCount} / 4 块核心部件`}
+                      ? '嗨！我是小机器人阿派～'
+                      : `已点亮 ${overview.unlockedPartsCount} / 4 块装备`}
                 </h2>
                 <span className="chip chip--tag">
-                  {overview.unlockedPartsCount} / 4 部件点亮
+                  {overview.unlockedPartsCount} / 4
                 </span>
               </div>
 
-              <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.55, color: 'var(--ink-2)' }}>
+              <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: 'var(--ink-2)' }}>
                 {overview.allComplete
-                  ? '你已经帮我找回了语言芯片、推进翼、记忆背包和极客皇冠！随时点我右下角的宠物小身体陪你玩！'
-                  : '我的 4 块电脑核心部件正在休眠——只要跟着下面 4 站边玩边学，每修复一站，我身上的 2.5D 装备就会当场进化升级哦！'}
+                  ? '4 块核心部件全部修好！随时点右下角陪我玩～'
+                  : '点亮下面 4 块小装备，就能把我完全唤醒！'}
               </p>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginTop: 4 }}>

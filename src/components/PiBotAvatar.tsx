@@ -228,16 +228,18 @@ export function PiBotAvatar({
           points="24,11 41,19 24,27 7,19"
           fill={topColor}
           stroke="var(--ink)"
-          strokeWidth="1.7"
+          strokeWidth="1.35"
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Left-Front Dark Visor Face */}
+        {/* Left-Front Warm Cocoa Visor Face */}
         <polygon
           points="7,19 24,27 24,46 7,38"
-          fill="var(--ink)"
+          fill="#554d47"
           stroke="var(--ink)"
-          strokeWidth="1.7"
+          strokeWidth="1.35"
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
 
@@ -246,17 +248,18 @@ export function PiBotAvatar({
           points="24,27 41,19 41,38 24,46"
           fill="var(--coral-100)"
           stroke="var(--ink)"
-          strokeWidth="1.7"
+          strokeWidth="1.35"
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
-        <g stroke="var(--coral)" strokeWidth="1.4" opacity="0.75">
+        <g stroke="var(--coral)" strokeWidth="1.2" opacity="0.55" strokeLinecap="round">
           <line x1="27" y1="44" x2="39" y2="23" />
           <line x1="33" y1="41" x2="40.5" y2="28" />
           <line x1="24.5" y1="37" x2="33.5" y2="22.5" />
         </g>
 
         {/* Little Isometric Feet (dangle cutely when dragged!) */}
-        <g stroke="var(--ink)" strokeWidth="1.5" strokeLinecap="round">
+        <g stroke="var(--ink)" strokeWidth="1.35" strokeLinecap="round">
           <line x1="16" y1="42.5" x2={trick === 'drag' ? '14' : '16'} y2="47.5" />
           <line x1="30" y1="43.5" x2={trick === 'drag' ? '32' : '30'} y2="48" />
         </g>

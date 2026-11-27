@@ -13,21 +13,21 @@ export function IsoDefs() {
     <defs>
       <pattern
         id="sc-hatch-wide"
-        width="7.5"
-        height="7.5"
-        patternTransform="rotate(34 0 0)"
-        patternUnits="userSpaceOnUse"
-      >
-        <line x1="0" y1="0" x2="0" y2="7.5" stroke="var(--coral)" strokeWidth="1.9" opacity="0.88" />
-      </pattern>
-      <pattern
-        id="sc-hatch-soft"
         width="8"
         height="8"
         patternTransform="rotate(34 0 0)"
         patternUnits="userSpaceOnUse"
       >
-        <line x1="0" y1="0" x2="0" y2="8" stroke="var(--coral)" strokeWidth="1.35" opacity="0.48" />
+        <line x1="0" y1="0" x2="0" y2="8" stroke="var(--coral)" strokeWidth="1.45" opacity="0.58" />
+      </pattern>
+      <pattern
+        id="sc-hatch-soft"
+        width="8.5"
+        height="8.5"
+        patternTransform="rotate(34 0 0)"
+        patternUnits="userSpaceOnUse"
+      >
+        <line x1="0" y1="0" x2="0" y2="8.5" stroke="var(--coral)" strokeWidth="1.1" opacity="0.34" />
       </pattern>
     </defs>
   );
@@ -154,7 +154,8 @@ export function IsoBox({
           points={geo.top}
           fill={topFill}
           stroke={strokeColor}
-          strokeWidth={1.6}
+          strokeWidth={1.25}
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
 
@@ -163,16 +164,18 @@ export function IsoBox({
           points={geo.left}
           fill={leftFill}
           stroke={strokeColor}
-          strokeWidth={1.6}
+          strokeWidth={1.25}
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
 
-        {/* Right-Front Face (Warm Blush + Signature Diagonal Coral Hatching) */}
+        {/* Right-Front Face (Warm Blush + Gentle Colored-Pencil Hatching) */}
         <polygon
           points={geo.right}
           fill={rightFill}
           stroke={strokeColor}
-          strokeWidth={1.6}
+          strokeWidth={1.25}
+          strokeLinecap="round"
           strokeLinejoin="round"
         />
         {useHatch && (
@@ -180,7 +183,8 @@ export function IsoBox({
             points={geo.right}
             fill="url(#sc-hatch-wide)"
             stroke={strokeColor}
-            strokeWidth={1.6}
+            strokeWidth={1.25}
+            strokeLinecap="round"
             strokeLinejoin="round"
           />
         )}
@@ -253,16 +257,18 @@ export function IsoTag({ anchor, tagPos, text, tone = 'dark' }: IsoTagProps) {
         x2={tagPos.x}
         y2={tagPos.y}
         stroke={lineColor}
-        strokeWidth={1.6}
+        strokeWidth={1.3}
+        strokeDasharray="3 2.5"
         strokeLinecap="round"
+        opacity={0.78}
       />
       <circle
         cx={anchor.x}
         cy={anchor.y}
-        r={4.2}
+        r={3.8}
         fill={lineColor}
         stroke="var(--stage)"
-        strokeWidth={1.5}
+        strokeWidth={1.4}
       />
       <g transform={`translate(${tagPos.x}, ${tagPos.y})`}>
         <rect
@@ -270,10 +276,10 @@ export function IsoTag({ anchor, tagPos, text, tone = 'dark' }: IsoTagProps) {
           y={-boxHeight / 2}
           width={boxWidth}
           height={boxHeight}
-          rx={8}
+          rx={13}
           fill={boxFill}
           stroke={boxStroke}
-          strokeWidth={1.2}
+          strokeWidth={1.1}
         />
         <text
           x={0}

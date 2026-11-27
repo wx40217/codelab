@@ -95,6 +95,10 @@ export default function App() {
   const [replayPos, setReplayPos] = useState<number | null>(null);
   const replayTimerRef = useRef<number | null>(null);
 
+  // Child-first picture-book defaults: keep heavy code & metrics softly folded until curious
+  const [codeExpanded, setCodeExpanded] = useState(false);
+  const [factsExpanded, setFactsExpanded] = useState(false);
+
   const questOverview = useMemo(() => computeQuestOverview(storage), [storage]);
 
   const activeLesson = getLessonById(route.lessonId) ?? READY_LESSON_LIST[0];
@@ -669,7 +673,20 @@ export default function App() {
 
   const hasLearnSandbox = Boolean(sandboxBits || sandboxPixels);
 
-  // Optional floating play/reset overlay in the bottom-left of the 2.5D stage
+  // Gentle play-first touch invitation in the bottom-left of the 2.5D picture-book stage
+  const learnTouchHint =
+    activeStep.state.scene === 'binary-bits'
+      ? '👆 点一点灯块，看数字怎么变'
+      : activeStep.state.scene === 'pixel-grid'
+        ? '👆 点一点小格子，自己涂鸦试试'
+        : activeStep.state.scene === 'stack-plates'
+          ? '👆 戳一戳最顶上和最底下的方块'
+          : activeStep.state.scene === 'queue-line'
+            ? '👆 戳一戳队头和中间排队的人'
+            : activeStep.state.scene === 'binary-tree'
+              ? '👆 点任意节点，听听它是树根还是叶子'
+              : null;
+
   const stageOverlay = !inChallenge ? (
     hasLearnSandbox ? (
       <button
@@ -684,7 +701,7 @@ export default function App() {
         }}
       >
         <RotateCcw size={13} />
-        <span>恢复本步演示</span>
+        <span>恢复画面</span>
       </button>
     ) : activeStep.state.scene === 'robot-loop' && activeStep.state.robotAt > 0 ? (
       <button
@@ -695,8 +712,10 @@ export default function App() {
         onClick={handleReplayRobotHops}
       >
         <Play size={13} style={{ color: 'var(--coral)' }} />
-        <span>{replayPos !== null ? '阿派跳跃中...' : '回放阿派跳跃'}</span>
+        <span>{replayPos !== null ? '阿派跳跃中...' : '看阿派再跳一遍'}</span>
       </button>
+    ) : learnTouchHint ? (
+      <span className="stage-touch-hint">{learnTouchHint}</span>
     ) : null
   ) : null;
 
@@ -831,6 +850,7 @@ export default function App() {
                   ? storage.solvedQuizzes.includes(activeStep.quiz.id)
                   : false
               }
+              petUpgrades={questOverview.upgrades}
               onPrev={() => handleSelectStep(clampedStepIndex - 1)}
               onNext={() => handleSelectStep(clampedStepIndex + 1)}
               onEnterChallenge={() => {
@@ -845,6 +865,8 @@ export default function App() {
             lines={codeLines}
             highlightLines={highlightLines}
             codeLang={storage.codeLang}
+            expanded={codeExpanded}
+            onToggleExpanded={() => setCodeExpanded((open) => !open)}
             onChangeCodeLang={handleCodeLangChange}
           />
 
@@ -853,6 +875,8 @@ export default function App() {
               title={factsData.title}
               rows={factsData.rows}
               note={factsData.note}
+              expanded={inChallenge || factsExpanded}
+              onToggleExpanded={() => setFactsExpanded((open) => !open)}
             />
           )}
         </aside>
